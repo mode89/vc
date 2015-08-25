@@ -13,7 +13,7 @@ SAMPLE_RATE = 100
 
 noise = wave.open( NOISE_PATH, "r" )
 frame_rate = noise.getframerate()
-FRAMES_PER_SAMPLE = frame_rate / SAMPLE_RATE
+FRAMES_PER_SAMPLE = int( frame_rate / SAMPLE_RATE )
 frames = []
 for i in range( noise.getnframes() ) :
     frame = noise.readframes( 1 )
@@ -26,7 +26,7 @@ figure = plt.figure()
 plotBars = plt.bar(
     # left=map( math.log10, freq[ 1 : BAR_COUNT ] ),
     left = freq[ 1 : BAR_COUNT ],
-    height=map( abs, ft[ 1 : BAR_COUNT ] ),
+    height=list( map( abs, ft[ 1 : BAR_COUNT ] ) ),
     align="center", width=0.01 )
 plt.ylim(10, 300000)
 
@@ -38,6 +38,6 @@ def animateFunction( sampleId ) :
         bar.set_height( abs( fft[i + 1] ) )
 
 anim = animation.FuncAnimation( figure, animateFunction,
-    frames=len( frames ) / FRAMES_PER_SAMPLE, interval=30 )
+    frames=int( len( frames ) / FRAMES_PER_SAMPLE ), interval=30 )
 
 plt.show()
