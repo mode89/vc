@@ -1,3 +1,6 @@
+import random
+import samples
+
 class Inputs:
 
     def __init__(self):
@@ -12,6 +15,9 @@ class Inputs:
     class State: pass
 
     class PlaySample(State):
+
+        def __init__(self):
+            self.sample = random.choice(samples.SAMPLES)
 
         def update(self, step):
             assert 0, "Not yet implemented"
