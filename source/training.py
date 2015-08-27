@@ -20,7 +20,7 @@ class Inputs:
             self.sample = random.choice(samples.SAMPLES)
 
         def update(self, step):
-            assert 0, "Not yet implemented"
+            frames = self.sample.read_frames(step)
 
     class PlayNoise(State):
 
