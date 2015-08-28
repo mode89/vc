@@ -18,9 +18,7 @@ class Inputs:
             self.frames = self.state.read_frames(step)
         assert self.frames is not None, "There are must be some frames"
 
-    class State: pass
-
-    class PlaySample(State):
+    class PlaySample():
 
         def __init__(self):
             self.sample = random.choice(samples.SAMPLES)
@@ -32,7 +30,7 @@ class Inputs:
         def next(self):
             return Inputs.PlayNoise()
 
-    class PlayNoise(State):
+    class PlayNoise():
 
         def __init__(self):
             self.sample = samples.NOISE
