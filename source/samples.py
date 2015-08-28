@@ -24,6 +24,9 @@ class Sample:
             self.pointer = upper
             return self.frames[lower:upper]
 
+    def reset(self):
+        self.pointer = 0
+
 DATA_DIR = os.path.join(
     os.path.dirname(os.path.realpath(__file__)), "data")
 SAMPLES = list(Sample(path) for path in
