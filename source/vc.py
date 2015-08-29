@@ -23,3 +23,7 @@ network = esn.create_network(
 trainer = training.Trainer(network)
 plot = plotting.Plot(trainer)
 plot.start()
+
+while plot.is_alive():
+    trainer.step(SIM_STEP)
+    plot.update()
