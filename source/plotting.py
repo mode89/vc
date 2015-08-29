@@ -49,30 +49,29 @@ class Plot(Process):
         self.mfcc_data = numpy.zeros([13, SIM_STEPS_PER_WINDOW])
 
         animation_object = animation.FuncAnimation(self.figure,
-            Plot.animation_function, fargs=[self], interval=30)
+            lambda frame_id: self.animation(), interval=30)
 
         pyplot.show()
 
-    @staticmethod
-    def animation_function(animation_frame, plot):
-        data = plot.queue.get_nowait()
+    def animation(self):
+        data = self.queue.get_nowait()
         time = data.time
         audio_frame_time = SIM_STEP / len(data.frames)
         plot_audio_frames_count = PLOT_TIME_WINDOW / \
             (audio_frame_time * PLOT_EACH_NTH_AUDIO_FRAME)
         for audio_frame in data.frames[::PLOT_EACH_NTH_AUDIO_FRAME]:
-            plot.time_data.append(time)
-            if len(plot.time_data) > plot_audio_frames_count:
-                plot.time_data.popleft()
+            self.time_data.append(time)
+            if len(self.time_data) > plot_audio_frames_count:
+                self.time_data.popleft()
             time += audio_frame_time * PLOT_EACH_NTH_AUDIO_FRAME
-            plot.audio_data.append(audio_frame)
-            if len(plot.audio_data) > plot_audio_frames_count:
-                plot.audio_data.popleft()
-        plot.mfcc_data = numpy.roll(plot.mfcc_data, -1)
-        plot.mfcc_data[:,-1] = data.mfcc
-        plot.audio_line.set_data(plot.time_data, plot.audio_data)
-        plot.plot_audio.set_xlim(
+            self.audio_data.append(audio_frame)
+            if len(self.audio_data) > plot_audio_frames_count:
+                self.audio_data.popleft()
+        self.mfcc_data = numpy.roll(self.mfcc_data, -1)
+        self.mfcc_data[:,-1] = data.mfcc
+        self.audio_line.set_data(self.time_data, self.audio_data)
+        self.plot_audio.set_xlim(
             time - PLOT_TIME_WINDOW, time)
-        plot.image_mfcc.set_array(plot.mfcc_data)
-        plot.image_mfcc.set_extent(
+        self.image_mfcc.set_array(self.mfcc_data)
+        self.image_mfcc.set_extent(
             (time - PLOT_TIME_WINDOW, time, 13, 0))
