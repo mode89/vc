@@ -1,3 +1,4 @@
+from scikits.talkbox.features import mfcc
 import random
 import samples
 
@@ -9,7 +10,7 @@ class Inputs:
         self.state = PlaySample()
 
     def __call__(self):
-        assert 0, "Not yet implemented"
+        return self.mfcc
 
     def update(self, step):
         self.frames = self.state.read_frames(step)
@@ -17,6 +18,8 @@ class Inputs:
             self.state = self.state.next()
             self.frames = self.state.read_frames(step)
         assert self.frames is not None, "There are must be some frames"
+        self.mfcc = mfcc(self.frames,
+            fs=len(self.frames)/step, nceps=13)[0][0]
 
 class PlaySample():
 
