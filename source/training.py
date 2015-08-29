@@ -58,8 +58,10 @@ class Trainer:
     def __init__(self, network):
         self.network = network
         self.inputs = Inputs()
+        self.time = 0
 
     def step(self, step):
+        self.time += step
         self.inputs.update(step)
         self.network.set_inputs(self.inputs())
         self.network.step(step)
