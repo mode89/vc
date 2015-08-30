@@ -1,5 +1,6 @@
 import esn
 import plotting
+import time
 import training
 
 NEURON_COUNT = 100
@@ -7,6 +8,7 @@ INPUT_COUNT = 100
 CONNECTIVITY = 0.5
 SIM_STEP = 0.01
 TRAIN_TIME = 100.0
+SLEEP_TIME = 0.02
 
 # Create network
 
@@ -27,3 +29,4 @@ plot.start()
 while plot.is_alive():
     trainer.step(SIM_STEP)
     plot.update()
+    time.sleep(SLEEP_TIME)
