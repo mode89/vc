@@ -14,6 +14,7 @@ class Data:
     time = None
     frames = None
     mfcc = None
+    output = None
 
 class Plot(Process):
 
@@ -28,24 +29,35 @@ class Plot(Process):
             data.time = self.trainer.time
             data.frames = self.trainer.inputs.frames
             data.mfcc = self.trainer.inputs.mfcc
+            data.output = self.trainer.outputs.value
             self.queue.put_nowait(data)
         except: pass
 
     def run(self):
         self.figure = pyplot.figure()
-        self.plot_audio = pyplot.subplot(211)
-        self.plot_mfcc = pyplot.subplot(212)
+
+        self.plot_audio = pyplot.subplot(311)
+        self.plot_mfcc = pyplot.subplot(312)
+        self.plot_output = pyplot.subplot(313)
+
         self.audio_line, = self.plot_audio.plot([], [])
         self.plot_audio.set_ylim(-0.2, 0.2)
         self.plot_audio.grid(True)
+
         self.image_mfcc = self.plot_mfcc.imshow(
             numpy.empty([13, SIM_STEPS_PER_WINDOW]),
             interpolation="gaussian", aspect="auto", cmap="gist_ncar")
         self.image_mfcc.set_extent((0, 100, 13, 0))
         self.image_mfcc.set_clim(-25.0, 3.0)
 
+        self.line_output, = self.plot_output.plot([], [])
+        self.plot_output.set_ylim(-0.1, 1.1)
+        self.plot_output.grid(True)
+
         self.time_data = deque()
         self.audio_data = deque()
+        self.output_time_data = deque()
+        self.output_data = deque()
         self.mfcc_data = numpy.zeros([13, SIM_STEPS_PER_WINDOW])
 
         animation_object = animation.FuncAnimation(self.figure,
@@ -75,3 +87,13 @@ class Plot(Process):
         self.image_mfcc.set_array(self.mfcc_data)
         self.image_mfcc.set_extent(
             (time - PLOT_TIME_WINDOW, time, 13, 0))
+
+        self.output_time_data.append(data.time)
+        if len(self.output_time_data) > 100:
+            self.output_time_data.popleft()
+        self.output_data.append(data.output)
+        if len(self.output_data) > 100:
+            self.output_data.popleft()
+        self.line_output.set_data(
+            self.output_time_data, self.output_data)
+        self.plot_output.set_xlim(data.time - PLOT_TIME_WINDOW, data.time)
