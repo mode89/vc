@@ -10,23 +10,25 @@ SIM_STEP = 0.01
 TRAIN_TIME = 100.0
 SLEEP_TIME = 0.02
 
-# Create network
+if __name__ == "__main__":
 
-network = esn.create_network(
-    inputCount=INPUT_COUNT,
-    neuronCount=NEURON_COUNT,
-    outputCount=1,
-    connectivity=CONNECTIVITY,
-    useOrthonormalMatrix=True
-)
+    # Create network
 
-# Train the network
+    network = esn.create_network(
+        inputCount=INPUT_COUNT,
+        neuronCount=NEURON_COUNT,
+        outputCount=1,
+        connectivity=CONNECTIVITY,
+        useOrthonormalMatrix=True
+    )
 
-trainer = training.Trainer(network)
-plot = plotting.Plot(trainer)
-plot.start()
+    # Train the network
 
-while plot.is_alive():
-    trainer.step(SIM_STEP)
-    plot.update()
-    time.sleep(SLEEP_TIME)
+    trainer = training.Trainer(network)
+    plot = plotting.Plot(trainer)
+    plot.start()
+
+    while plot.is_alive():
+        trainer.step(SIM_STEP)
+        plot.update()
+        time.sleep(SLEEP_TIME)
