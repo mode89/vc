@@ -30,6 +30,7 @@ class Plot(Process):
             data.frames = self.trainer.inputs.frames
             data.mfcc = self.trainer.inputs.mfcc
             data.output = self.trainer.outputs.value
+            data.network_output = self.trainer.network.capture_output(1)[0]
             self.queue.put_nowait(data)
         except: pass
 
@@ -51,6 +52,7 @@ class Plot(Process):
         self.image_mfcc.set_clim(-25.0, 3.0)
 
         self.line_output, = self.plot_output.plot([], [])
+        self.line_network_output, = self.plot_output.plot([], [])
         self.plot_output.set_ylim(-0.1, 1.1)
         self.plot_output.grid(True)
 
@@ -58,6 +60,7 @@ class Plot(Process):
         self.audio_data = deque()
         self.output_time_data = deque()
         self.output_data = deque()
+        self.network_output_data = deque()
         self.mfcc_data = numpy.zeros([13, SIM_STEPS_PER_WINDOW])
 
         animation_object = animation.FuncAnimation(self.figure,
@@ -97,3 +100,9 @@ class Plot(Process):
         self.line_output.set_data(
             self.output_time_data, self.output_data)
         self.plot_output.set_xlim(data.time - PLOT_TIME_WINDOW, data.time)
+
+        self.network_output_data.append(data.network_output)
+        if len(self.network_output_data) > 100:
+            self.network_output_data.popleft()
+        self.line_network_output.set_data(
+            self.output_time_data, self.network_output_data)
