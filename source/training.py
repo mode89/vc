@@ -1,4 +1,5 @@
 from scikits.talkbox.features import mfcc
+import numpy
 import random
 import samples
 import signals
@@ -87,6 +88,9 @@ class Trainer:
         self.inputs = Inputs()
         self.outputs = Outputs(self.inputs)
         self.time = 0
+        self.network.set_input_scalings(
+            numpy.array([0.005, 0.1, 0.1, 0.1, 0.1, 0.1,
+                0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]) * 0.3)
 
     def step(self, step):
         self.time += step
