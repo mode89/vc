@@ -1,4 +1,5 @@
 import esn
+from grid import Grid
 import numpy
 import training
 
@@ -28,3 +29,20 @@ class Model:
     def run(self):
         while self.trainer.time < self.trainer.train_time:
             self.trainer.step(SIM_STEP)
+
+if __name__ == "__main__":
+
+    grid = Grid(dict(
+            neuron_count=[1000, 500, 100],
+            connectivity=[0.5, 0.75, 1.0, 0.25],
+            leaking_rate=[0.5, 0.1, 1.0],
+            input_scale=[0.1, 0.01, 1.0],
+            feedback_scale=[1.0, 0.1, 0.01],
+            washout_time=[10.0, 50.0, 0.0],
+            train_time=[500.0, 1000.0, 100.0]
+        ))
+
+    for params in grid:
+        print(params)
+        model = Model(**params)
+        model.run()
