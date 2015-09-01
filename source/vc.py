@@ -8,6 +8,8 @@ INPUT_COUNT = 13
 CONNECTIVITY = 0.5
 SIM_STEP = 0.01
 SLEEP_TIME = 0.02
+WASHOUT_TIME = 50.0
+TRAIN_TIME = 300.0
 
 if __name__ == "__main__":
 
@@ -23,7 +25,8 @@ if __name__ == "__main__":
 
     # Train the network
 
-    trainer = training.Trainer(network)
+    trainer = training.Trainer(network, washout_time=WASHOUT_TIME,
+        train_time=TRAIN_TIME)
     plot = plotting.Plot(trainer)
     plot.start()
 

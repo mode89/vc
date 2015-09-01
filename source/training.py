@@ -7,8 +7,6 @@ import signals
 NOISE_LENGTH_RANGE = (0.5, 2.0)
 OUTPUT_AMPLITUDE = 0.7
 OUTPUT_PULSE_WIDTH = 0.1
-WASHOUT_TIME = 50.0
-TRAIN_TIME = 300.0
 
 class Inputs:
 
@@ -83,8 +81,10 @@ class Outputs:
 
 class Trainer:
 
-    def __init__(self, network):
+    def __init__(self, network, washout_time, train_time):
         self.network = network
+        self.washout_time = washout_time
+        self.train_time = train_time
         self.inputs = Inputs()
         self.outputs = Outputs(self.inputs)
         self.time = 0
@@ -97,7 +97,7 @@ class Trainer:
         self.network.step(step)
 
         network_output = self.network.capture_output(1)[0]
-        if self.time > WASHOUT_TIME and self.time < TRAIN_TIME:
+        if self.time > self.washout_time and self.time < self.train_time:
             if self.outputs.pulse_time <= OUTPUT_PULSE_WIDTH or \
                 (self.outputs.pulse_time > OUTPUT_PULSE_WIDTH and \
                     abs(network_output) > 0.1):
