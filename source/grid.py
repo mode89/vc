@@ -10,17 +10,18 @@ class Grid:
 
         def __init__(self, params_dict):
             self.params_dict = params_dict
-            self.params = None
+            self.params = dict()
+            for key in self.params_dict:
+                self.params[key] = self.params_dict[key][0]
 
         def __iter__(self):
             return self
 
         def __next__(self):
             if self.params is None:
-                self.params = dict()
-                for key in self.params_dict:
-                    self.params[key] = self.params_dict[key][0]
-                return self.params
+                raise StopIteration()
+
+            retval = self.params.copy()
 
             increment = True
             for key in self.params_dict.keys():
@@ -34,7 +35,7 @@ class Grid:
                         self.params[key] = values[index + 1]
                         increment = False
 
-            if not increment:
-                return self.params
-            else:
-                raise StopIteration()
+            if increment:
+                self.params = None
+
+            return retval
