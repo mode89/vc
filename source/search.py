@@ -1,5 +1,6 @@
 import esn
 from grid import Grid
+import multiprocessing
 import numpy
 import training
 
@@ -43,4 +44,5 @@ if __name__ == "__main__":
             train_time=[500.0, 1000.0, 100.0]
         ))
 
-    map(simulation_star, grid)
+    pool = multiprocessing.Pool()
+    pool.map(simulation_star, grid)
