@@ -7,7 +7,6 @@ NEURON_COUNT = 100
 INPUT_COUNT = 13
 CONNECTIVITY = 0.5
 SIM_STEP = 0.01
-TRAIN_TIME = 100.0
 SLEEP_TIME = 0.02
 
 if __name__ == "__main__":

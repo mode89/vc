@@ -6,6 +6,8 @@ import signals
 NOISE_LENGTH_RANGE = (0.5, 2.0)
 OUTPUT_AMPLITUDE = 0.7
 OUTPUT_PULSE_WIDTH = 0.1
+WASHOUT_TIME = 50.0
+TRAIN_TIME = 300.0
 
 class Inputs:
 
@@ -92,3 +94,11 @@ class Trainer:
         self.outputs.update(step)
         self.network.set_inputs(self.inputs())
         self.network.step(step)
+
+        network_output = self.network.capture_output(1)[0]
+        if self.time > WASHOUT_TIME and self.time < TRAIN_TIME:
+            if self.outputs.pulse_time <= OUTPUT_PULSE_WIDTH or \
+                (self.outputs.pulse_time > OUTPUT_PULSE_WIDTH and \
+                    abs(network_output) > 0.1):
+                self.network.train_online([self.outputs.value],
+                    forceOutput=False)
