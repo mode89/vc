@@ -39,3 +39,7 @@ class Grid:
                 self.params = None
 
             return retval
+
+        # Python 2.7 uses next() instead of __next__()
+        def next(self):
+            return self.__next__()
