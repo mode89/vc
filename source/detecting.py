@@ -38,3 +38,13 @@ class Pulse:
         else:
             self.end = True if self.value else False
             self.value = False
+
+class Error:
+
+    def __init__(self, maxlen):
+        self.ref = Pulse(maxlen)
+        self.out = Pulse(maxlen)
+
+    def update(self, ref, out):
+        self.ref.update(ref)
+        self.out.update(out)
