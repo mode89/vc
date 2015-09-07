@@ -40,11 +40,27 @@ class Pulse:
             self.value = False
 
 class Error:
+    """Error detector"""
 
-    def __init__(self, maxlen):
+    def __init__(self, maxlen, maxint):
+        """Constructor
+
+        Arguments:
+        maxlen - number of samples for calculation of temporary RMS value
+        maxint - maximum number of samples between corresponding reference
+            and output pulses
+        """
         self.ref = Pulse(maxlen)
+        """Reference signal pulse detector"""
         self.out = Pulse(maxlen)
+        """Output (real) signal pulse detector"""
 
     def update(self, ref, out):
+        """Sample reference and output signals
+
+        Arguments:
+        ref - reference signal sample
+        out - output signal sample
+        """
         self.ref.update(ref)
         self.out.update(out)
