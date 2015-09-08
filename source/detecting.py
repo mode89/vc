@@ -54,6 +54,13 @@ class Error:
         """Reference signal pulse detector"""
         self.out = Pulse(maxlen)
         """Output (real) signal pulse detector"""
+        self.maxint = maxint
+        """Maximum number of samples between correspoinding reference and
+            output pulses"""
+        self.state = Error.Updating(self)
+        """Current state of the error detector"""
+        self.detected = False
+        """True if an error has been detected during the last update"""
 
     def update(self, ref, out):
         """Sample reference and output signals
@@ -64,3 +71,80 @@ class Error:
         """
         self.ref.update(ref)
         self.out.update(out)
+        self.detected = False
+        self.state = self.state.next()
+
+    class Updating:
+        """Updating state of reference and output pulse detectors"""
+
+        def __init__(self, context):
+            """Save reference to error detector object
+
+            Arguments:
+            context - Error detector object
+            """
+            self.context = context
+            """Error detector object"""
+
+        def next(self):
+            """Determine the next state of the error detector"""
+            if self.context.ref.begin and self.context.out.begin:
+                return self
+            elif self.context.ref.begin:
+                return Error.WaitingOut(self.context)
+            elif self.context.out.begin:
+                return Error.WaitingRef(self.context)
+            else:
+                return self
+
+    class WaitingRef:
+        """Waiting for a pulse of reference signal"""
+
+        def __init__(self, context):
+            """Save reference to error detector object and initialize
+            countdown
+
+            Arguments:
+            context - Error detector object
+            """
+            self.context = context
+            """Error detector object"""
+            self.countdown = context.maxint
+            """Count down samples until pulse of reference signal"""
+
+        def next(self):
+            """Determine the next state of the error detector"""
+            if self.context.out.begin or self.countdown == 0:
+                self.context.detected = True
+                return Error.Updating(self.context)
+            elif self.context.ref.begin:
+                return Error.Updating(self.context)
+            else:
+                self.countdown -= 1
+                return self
+
+    class WaitingOut:
+        """Waiting for a pulse of output signal"""
+
+        def __init__(self, context):
+            """Save reference to error detector object and initialize
+            countdown
+
+            Arguments:
+            context - Error detector object
+            """
+            self.context = context
+            """Error detector object"""
+            self.countdown = context.maxint
+            """Count down samples until pulse of output signal"""
+
+        def next(self):
+            """Determine the next state of the error detector"""
+            if self.context.ref.begin or self.countdown == 0:
+                self.context.detected = True
+                return Error.Updating(self.context)
+            elif self.context.out.begin:
+                return Error.Updating(self.context)
+            else:
+                self.countdown -= 1
+                return self
