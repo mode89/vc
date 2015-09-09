@@ -114,9 +114,14 @@ class Error:
 
         def next(self):
             """Determine the next state of the error detector"""
-            if self.context.out.begin or self.countdown == 0:
+            if self.countdown == 0:
                 self.context.detected = True
                 return Error.Updating(self.context)
+            elif self.context.out.begin:
+                self.context.detected = True
+                # Restart waiting if two consecutive pulses of the same
+                # signal have came
+                return Error.WaitingRef(self.context)
             elif self.context.ref.begin:
                 return Error.Updating(self.context)
             else:
@@ -140,9 +145,14 @@ class Error:
 
         def next(self):
             """Determine the next state of the error detector"""
-            if self.context.ref.begin or self.countdown == 0:
+            if self.countdown == 0:
                 self.context.detected = True
                 return Error.Updating(self.context)
+            elif self.context.ref.begin:
+                self.context.detected = True
+                # Restart waiting if two consecutive pulses of the same
+                # signal have came
+                return Error.WaitingOut(self.context)
             elif self.context.out.begin:
                 return Error.Updating(self.context)
             else:
