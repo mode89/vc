@@ -61,6 +61,8 @@ class Error:
         """Current state of the error detector"""
         self.detected = False
         """True if an error has been detected during the last update"""
+        self.count = 0
+        """Count detected errors"""
 
     def update(self, ref, out):
         """Sample reference and output signals
@@ -73,6 +75,8 @@ class Error:
         self.out.update(out)
         self.detected = False
         self.state = self.state.next()
+        if self.detected:
+            self.count += 1
 
     class Updating:
         """Updating state of reference and output pulse detectors"""
