@@ -41,7 +41,7 @@ if __name__ == "__main__":
             input_scale=[0.1, 0.01, 1.0],
             feedback_scale=[1.0, 0.1, 0.01],
             washout_time=[10.0, 50.0, 0.0],
-            train_time=[500.0, 1000.0, 100.0]
+            train_time=[500.0, 1000.0]
         ))
 
     pool = multiprocessing.Pool()
