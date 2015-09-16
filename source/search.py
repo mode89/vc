@@ -25,12 +25,20 @@ def simulation(neuron_count, connectivity, leaking_rate, input_scale,
     trainer = training.Trainer(network, washout_time=washout_time,
         train_time=train_time)
 
-    while trainer.time < trainer.train_time:
-        trainer.step(SIM_STEP)
+    stable = True
+    try:
+        while trainer.time < trainer.train_time:
+            trainer.step(SIM_STEP)
+    except esn.OutputIsNotFinite:
+        stable = False
+
+    return trainer.time, stable
 
 def simulation_star(params):
+    time, stable = simulation(**params)
     print(params)
-    simulation(**params)
+    print("Time: {0}".format(time))
+    print("Stable: {0}".format(stable))
 
 if __name__ == "__main__":
 
