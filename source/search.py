@@ -1,3 +1,4 @@
+import detecting
 import esn
 from grid import Grid
 import multiprocessing
@@ -5,6 +6,7 @@ import numpy
 import training
 
 SIM_STEP = 0.01
+FREERUN_TIME = 1000.0
 
 def simulation(neuron_count, connectivity, leaking_rate, input_scale,
     feedback_scale, washout_time, train_time):
@@ -26,19 +28,26 @@ def simulation(neuron_count, connectivity, leaking_rate, input_scale,
         train_time=train_time)
 
     stable = True
+    error = detecting.Error(0.5 / SIM_STEP, 0.3 / SIM_STEP)
     try:
-        while trainer.time < trainer.train_time:
+        while trainer.time < train_time:
             trainer.step(SIM_STEP)
+        while trainer.time < (train_time + FREERUN_TIME):
+            trainer.step(SIM_STEP)
+            ref = trainer.outputs.value
+            out = network.capture_output(1)[0]
+            error.update(ref, out)
     except esn.OutputIsNotFinite:
         stable = False
 
-    return trainer.time, stable
+    return trainer.time, stable, error.count
 
 def simulation_star(params):
-    time, stable = simulation(**params)
+    time, stable, errcnt = simulation(**params)
     print(params)
     print("Time: {0}".format(time))
     print("Stable: {0}".format(stable))
+    print("Error count: {0}".format(errcnt))
 
 if __name__ == "__main__":
 
