@@ -1,2 +1,3 @@
 grid search
     implement error detection
+    show progress with wxPython
