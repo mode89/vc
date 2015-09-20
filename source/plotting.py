@@ -1,4 +1,5 @@
 from collections import deque
+from detecting import RMS
 from matplotlib import pyplot
 from matplotlib import animation
 from multiprocessing import Process, Queue
@@ -22,6 +23,7 @@ class Plot(Process):
         Process.__init__(self)
         self.trainer = trainer
         self.queue = Queue(1)
+        self.network_output_rms = RMS(50)
 
     def update(self):
         try:
@@ -31,6 +33,8 @@ class Plot(Process):
             data.mfcc = self.trainer.inputs.mfcc
             data.output = self.trainer.outputs.value
             data.network_output = self.trainer.network.capture_output(1)[0]
+            self.network_output_rms.append(data.network_output)
+            data.network_output_rms = self.network_output_rms() * 5
             self.queue.put_nowait(data)
         except: pass
 
@@ -53,6 +57,7 @@ class Plot(Process):
 
         self.line_output, = self.plot_output.plot([], [])
         self.line_network_output, = self.plot_output.plot([], [])
+        self.line_network_output_rms, = self.plot_output.plot([], [])
         self.plot_output.set_ylim(-0.1, 1.1)
         self.plot_output.grid(True)
 
@@ -61,6 +66,7 @@ class Plot(Process):
         self.output_time_data = deque()
         self.output_data = deque()
         self.network_output_data = deque()
+        self.network_output_rms_data = deque()
         self.mfcc_data = numpy.zeros([13, SIM_STEPS_PER_WINDOW])
 
         animation_object = animation.FuncAnimation(self.figure,
@@ -106,3 +112,9 @@ class Plot(Process):
             self.network_output_data.popleft()
         self.line_network_output.set_data(
             self.output_time_data, self.network_output_data)
+
+        self.network_output_rms_data.append(data.network_output_rms)
+        if len(self.network_output_rms_data) > 100:
+            self.network_output_rms_data.popleft()
+        self.line_network_output_rms.set_data(
+            self.output_time_data, self.network_output_rms_data)
