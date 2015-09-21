@@ -1,4 +1,5 @@
 import esn
+import numpy
 import plotting
 import time
 import training
@@ -8,6 +9,7 @@ INPUT_COUNT = 13
 CONNECTIVITY = 0.5
 SIM_STEP = 0.01
 SLEEP_TIME = 0.02
+NORMALIZE_TIME = 50.0
 WASHOUT_TIME = 50.0
 TRAIN_TIME = 300.0
 
@@ -28,6 +30,18 @@ if __name__ == "__main__":
 
     trainer = training.Trainer(network, washout_time=WASHOUT_TIME,
         train_time=TRAIN_TIME)
+
+    # Calculate input scalings
+    print("Normalizing inputs...")
+    inmin = numpy.finfo(float).max
+    inmax = numpy.finfo(float).min
+    for i in range(int(NORMALIZE_TIME / SIM_STEP)):
+        inputs = trainer.inputs
+        inputs.update(SIM_STEP)
+        inmin = numpy.minimum(inmin, inputs())
+        inmax = numpy.maximum(inmax, inputs())
+    network.set_input_scalings(numpy.reciprocal(inmax - inmin) * 0.2)
+    network.set_input_bias(-(inmax + inmin) / 2.0)
 
     # No need to plot during washing out
     print("Washing-out...")
