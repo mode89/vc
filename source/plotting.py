@@ -4,6 +4,7 @@ from matplotlib import pyplot
 from matplotlib import animation
 from multiprocessing import Process, Queue
 import numpy
+from Queue import Full
 
 SIM_STEP = 0.01
 PLOT_TIME_WINDOW = 3.0
@@ -36,7 +37,7 @@ class Plot(Process):
             self.network_output_rms.append(data.network_output)
             data.network_output_rms = self.network_output_rms() * 5
             self.queue.put_nowait(data)
-        except: pass
+        except Full: pass
 
     def run(self):
         self.figure = pyplot.figure()
