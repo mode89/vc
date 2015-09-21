@@ -31,7 +31,8 @@ class Plot(Process):
             data = Data()
             data.time = self.trainer.time
             data.frames = self.trainer.inputs.frames
-            data.mfcc = self.trainer.inputs.mfcc
+            data.mfcc = \
+                self.trainer.network.capture_transformed_inputs(13)
             data.output = self.trainer.outputs.value
             data.network_output = self.trainer.network.capture_output(1)[0]
             self.network_output_rms.append(data.network_output)
@@ -52,9 +53,9 @@ class Plot(Process):
 
         self.image_mfcc = self.plot_mfcc.imshow(
             numpy.empty([13, SIM_STEPS_PER_WINDOW]),
-            interpolation="gaussian", aspect="auto", cmap="gist_ncar")
+            interpolation="gaussian", aspect="auto")
         self.image_mfcc.set_extent((0, 100, 13, 0))
-        self.image_mfcc.set_clim(-25.0, 3.0)
+        self.image_mfcc.set_clim(-0.1, 0.1)
 
         self.line_output, = self.plot_output.plot([], [])
         self.line_network_output, = self.plot_output.plot([], [])
