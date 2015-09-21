@@ -34,7 +34,7 @@ if __name__ == "__main__":
     while trainer.time < WASHOUT_TIME:
         trainer.step(SIM_STEP)
 
-    print("Plotting...")
+    print("Training...")
     plot = plotting.Plot(trainer)
     plot.start()
     while plot.is_alive():
