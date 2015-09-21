@@ -27,9 +27,13 @@ if __name__ == "__main__":
 
     trainer = training.Trainer(network, washout_time=WASHOUT_TIME,
         train_time=TRAIN_TIME)
+
+    # No need to plot during washing out
+    while trainer.time < WASHOUT_TIME:
+        trainer.step(SIM_STEP)
+
     plot = plotting.Plot(trainer)
     plot.start()
-
     while plot.is_alive():
         trainer.step(SIM_STEP)
         plot.update()
