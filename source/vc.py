@@ -15,6 +15,7 @@ if __name__ == "__main__":
 
     # Create network
 
+    print("Generating network...")
     network = esn.create_network(
         inputCount=INPUT_COUNT,
         neuronCount=NEURON_COUNT,
@@ -29,9 +30,11 @@ if __name__ == "__main__":
         train_time=TRAIN_TIME)
 
     # No need to plot during washing out
+    print("Washing-out...")
     while trainer.time < WASHOUT_TIME:
         trainer.step(SIM_STEP)
 
+    print("Plotting...")
     plot = plotting.Plot(trainer)
     plot.start()
     while plot.is_alive():
