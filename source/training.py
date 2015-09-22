@@ -76,7 +76,7 @@ class Outputs:
         self.pulse_time += step
 
     def new_pulse(self):
-        return signals.GaussianPulse(
+        return signals.RectangularPulse(
             amplitude=OUTPUT_AMPLITUDE, width=OUTPUT_PULSE_WIDTH)
 
 class Trainer:
