@@ -21,6 +21,15 @@ class GaussianPulse :
     def __call__( self, x ) :
         return self.gaussian( x )
 
+class RectangularPulse :
+
+    def __init__( self, amplitude, width ) :
+        self.amplitude = amplitude
+        self.width = width
+
+    def __call__( self, x ) :
+        return self.amplitude if x <= self.width else 0.0
+
 class PerlinNoise :
 
     def __init__( self, persistence, octave_count ) :
