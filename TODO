@@ -1,3 +1,6 @@
+output pulse detector
+    calculate derivative of output signal
+        try derivative of FFT
 grid search
     implement error detection
     show progress with wxPython
