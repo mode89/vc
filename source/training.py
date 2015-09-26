@@ -7,6 +7,7 @@ import signals
 NOISE_LENGTH_RANGE = (0.5, 2.0)
 OUTPUT_AMPLITUDE = 0.7
 OUTPUT_PULSE_WIDTH = 0.1
+TRAIN_THRESHOLD = 0.01
 
 class Inputs:
 
@@ -100,6 +101,6 @@ class Trainer:
         if self.time > self.washout_time and self.time < self.train_time:
             if self.outputs.pulse_time <= OUTPUT_PULSE_WIDTH or \
                 (self.outputs.pulse_time > OUTPUT_PULSE_WIDTH and \
-                    abs(network_output) > 0.1):
+                    abs(network_output) > TRAIN_THRESHOLD):
                 self.network.train_online([self.outputs.value],
                     forceOutput=False)
