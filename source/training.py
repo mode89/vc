@@ -33,7 +33,19 @@ class Inputs:
 class PlaySample():
 
     def __init__(self):
-        self.sample = random.choice(samples.SAMPLES)
+        self.sample = random.choice(samples.COMPUTER)
+        self.sample.reset()
+
+    def read_frames(self, step):
+        return self.sample.read_frames(step)
+
+    def next(self):
+        return PlayNoise()
+
+class PlayFalseSample():
+
+    def __init__(self):
+        self.sample = random.choice(samples.MUSIC + samples.CLAP)
         self.sample.reset()
 
     def read_frames(self, step):
@@ -60,7 +72,7 @@ class PlayNoise():
         return frames
 
     def next(self):
-        return PlaySample()
+        return random.choice([PlaySample, PlayFalseSample])()
 
 class Outputs:
 

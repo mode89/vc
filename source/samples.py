@@ -29,6 +29,10 @@ class Sample:
 
 DATA_DIR = os.path.join(
     os.path.dirname(os.path.realpath(__file__)), "data")
-SAMPLES = list(Sample(path) for path in
+MUSIC = list(Sample(path) for path in
     glob.glob(os.path.join(DATA_DIR, "music*")))
+CLAP = list(Sample(path) for path in
+    glob.glob(os.path.join(DATA_DIR, "clap*")))
+COMPUTER = list(Sample(path) for path in
+    glob.glob(os.path.join(DATA_DIR, "computer*")))
 NOISE = Sample(os.path.join(DATA_DIR, "noise.wav"))
