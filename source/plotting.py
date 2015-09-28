@@ -36,7 +36,7 @@ class Plot(Process):
             data.output = self.trainer.outputs.value
             data.network_output = self.trainer.network.capture_output(1)[0]
             self.network_output_rms.append(data.network_output)
-            data.network_output_rms = self.network_output_rms() * 5
+            data.network_output_rms = self.network_output_rms()
             self.queue.put_nowait(data)
         except Full: pass
 
