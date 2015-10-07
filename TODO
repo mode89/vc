@@ -1,5 +1,6 @@
 output pulse detector
     level triggered detection
+        maybe need to use integration or spiking neurons
     calculate derivative of output signal
         try derivative of FFT
 grid search
