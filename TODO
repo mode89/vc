@@ -1,3 +1,5 @@
+vc
+    online training
 output pulse detector
     level triggered detection
         maybe need to use integration or spiking neurons
