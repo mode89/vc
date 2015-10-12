@@ -2,6 +2,7 @@ vc
     do command on audio pattern
     online training
         show dialog
+    run as a service
 output pulse detector
     level triggered detection
         maybe need to use integration or spiking neurons
