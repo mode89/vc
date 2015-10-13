@@ -2,6 +2,7 @@ vc
     do command on audio pattern
     online training
         show dialog
+        handle background sound
     run as a service
 output pulse detector
     level triggered detection
