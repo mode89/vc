@@ -1,4 +1,5 @@
 vc
+    capture audio
     do command on audio pattern
     online training
         show dialog
