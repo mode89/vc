@@ -6,6 +6,8 @@ vc
         show dialog
         handle background sound
     run as a service
+    implement MFCC
+        remove dependency to 'scikits'
 output pulse detector
     level triggered detection
         maybe need to use integration or spiking neurons
