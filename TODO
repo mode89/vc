@@ -1,5 +1,6 @@
 vc
     capture audio
+    process audio and feed it to the neural network
     do command on audio pattern
     online training
         show dialog
