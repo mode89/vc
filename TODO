@@ -8,6 +8,8 @@ vc
     run as a service
     implement MFCC
         remove dependency to 'scikits'
+    debugging
+        plot network's output
 output pulse detector
     level triggered detection
         maybe need to use integration or spiking neurons
