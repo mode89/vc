@@ -1,6 +1,11 @@
 vc
     capture audio
     process audio and feed it to the neural network
+    detect output pulse
+        level triggered detection
+            maybe need to use integration or spiking neurons
+        calculate derivative of output signal
+            try derivative of FFT
     do command on audio pattern
     online training
         show dialog
@@ -10,11 +15,6 @@ vc
         remove dependency to 'scikits'
     debugging
         plot network's output
-output pulse detector
-    level triggered detection
-        maybe need to use integration or spiking neurons
-    calculate derivative of output signal
-        try derivative of FFT
 grid search
     implement error detection
     show progress with wxPython
