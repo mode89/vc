@@ -1,16 +1,9 @@
 import esn
-import pyaudio
+import input
 
 INPUT_COUNT = 13
 NEURON_COUNT = 100
 CONNECTIVITY = 0.5
-
-INPUT_FORMAT = pyaudio.paInt16
-FRAME_RATE = 44100
-SAMPLE_RATE = 100
-
-def capture_callback(in_data, frame_count, time_info, status_flag):
-    return in_data, pyaudio.paContinue
 
 def main():
 
@@ -25,17 +18,12 @@ def main():
         useOrthonormalMatrix=True
     )
 
-    p = pyaudio.PyAudio()
-    stream = p.open(
-        input=True,
-        format=INPUT_FORMAT,
-        channels=1,
-        rate=FRAME_RATE,
-        frames_per_buffer=FRAME_RATE / SAMPLE_RATE,
-        stream_callback=capture_callback)
-    stream.start_stream()
-    stream.stop_stream()
-    stream.close()
+    input_audio = input.Audio()
+
+    while True:
+        network.set_inputs(input_audio.read())
+
+    input.close()
 
 if __name__ == "__main__":
     main()
