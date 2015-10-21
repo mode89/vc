@@ -12,6 +12,7 @@ vc
         handle background sound
     run as a service
     implement MFCC
+        try DFT instead of DCT
         remove dependency to 'scikits'
     debugging
         plot network's output
