@@ -7,6 +7,7 @@ FRAME_RATE = 44100
 SAMPLE_RATE = 100
 FRAMES_PER_BUFFER = FRAME_RATE / SAMPLE_RATE
 SAMPLE_STEP = 1.0 / SAMPLE_RATE
+MFCC_NUM = 13
 
 class Audio:
 
@@ -21,9 +22,13 @@ class Audio:
         self.stream.start_stream()
 
     def read(self):
-        frames = numpy.fromstring(self.stream.read(FRAMES_PER_BUFFER),
-            dtype=numpy.int16) / float(2 ** 15)
-        return mfcc(frames, fs=FRAME_RATE, nceps=13)[0][0]
+        try:
+            frames = numpy.fromstring(self.stream.read(FRAMES_PER_BUFFER),
+                dtype=numpy.int16) / float(2 ** 15)
+            return mfcc(frames, fs=FRAME_RATE, nceps=MFCC_NUM)[0][0]
+        except IOError as e:
+            print(e)
+            return numpy.zeros(MFCC_NUM)
 
     def close(self):
         self.stream.stop_stream()
