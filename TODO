@@ -11,6 +11,7 @@ vc
         show dialog
         handle background sound
     run as a service
+        implement server
     control via client application
         execute command by passing command-line arguments
     implement MFCC
