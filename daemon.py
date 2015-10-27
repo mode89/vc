@@ -1,3 +1,4 @@
+import communication
 import esn
 import input
 
@@ -16,6 +17,8 @@ class Daemon:
             connectivity=CONNECTIVITY,
             useOrthonormalMatrix=True)
         self.input_audio = input.Audio()
+        self.server = communication.Server()
+        self.server.start()
 
     def loop(self):
         while True:
