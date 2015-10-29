@@ -17,7 +17,7 @@ class Daemon:
             connectivity=CONNECTIVITY,
             useOrthonormalMatrix=True)
         self.input_audio = input.Audio()
-        self.server = server.Server()
+        self.server = server.Server(self)
         self.server.start()
 
     def loop(self):
