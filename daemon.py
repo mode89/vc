@@ -24,7 +24,7 @@ class Daemon:
         self.working = True
         while self.working:
             self.network.set_inputs(self.input_audio.read())
-        self.input.close()
+        self.input_audio.close()
 
     def exit(self, options):
         print("Exiting...")
