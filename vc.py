@@ -3,7 +3,10 @@ from client import Client
 from daemon import Daemon
 import argparse
 
-COMMANDS = ["daemonize"]
+COMMANDS = [
+    "daemonize",
+    "exit"
+]
 
 def daemonize():
     daemon = Daemon()

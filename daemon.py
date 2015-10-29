@@ -21,6 +21,11 @@ class Daemon:
         self.server.start()
 
     def loop(self):
-        while True:
+        self.working = True
+        while self.working:
             self.network.set_inputs(self.input_audio.read())
         self.input.close()
+
+    def exit(self, options):
+        print("Exiting...")
+        self.working = False
