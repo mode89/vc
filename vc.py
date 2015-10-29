@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from client import Client
 from daemon import Daemon
 import argparse
 
@@ -7,6 +8,11 @@ COMMANDS = ["daemonize"]
 def daemonize():
     daemon = Daemon()
     daemon.loop()
+
+def sendCommand(command, options):
+    client = Client()
+    client.sendCommand(command, options)
+    client.close()
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser()
@@ -17,4 +23,8 @@ if __name__ == "__main__":
         "options", metavar="<options>", nargs=argparse.REMAINDER,
         help="Command options")
     args = argparser.parse_args()
-    locals()[args.command]()
+
+    if args.command == "daemonize":
+        daemonize()
+    else:
+        sendCommand(args.command, args.options)
