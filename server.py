@@ -3,12 +3,12 @@ from SocketServer import TCPServer
 from SocketServer import ThreadingMixIn
 from threading import Thread
 
-SERVER_ADDRESS = "localhost", 0
+ADDRESS = "localhost", 1234
 
 class Server(ThreadingMixIn, TCPServer):
 
     def __init__(self):
-        TCPServer.__init__(self, SERVER_ADDRESS, Server.RequestHandler)
+        TCPServer.__init__(self, ADDRESS, Server.RequestHandler)
         self.thread = Thread(target=self.serve_forever)
         self.thread.daemon = True
 
