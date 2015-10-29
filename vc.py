@@ -13,5 +13,8 @@ if __name__ == "__main__":
     argparser.add_argument(
         "command", metavar="<command>", choices=COMMANDS,
         help="Execute command.")
+    argparser.add_argument(
+        "options", metavar="<options>", nargs=argparse.REMAINDER,
+        help="Command options")
     args = argparser.parse_args()
     locals()[args.command]()
