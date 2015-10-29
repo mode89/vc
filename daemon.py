@@ -1,6 +1,6 @@
-import communication
 import esn
 import input
+import server
 
 INPUT_COUNT = 13
 NEURON_COUNT = 100
@@ -17,7 +17,7 @@ class Daemon:
             connectivity=CONNECTIVITY,
             useOrthonormalMatrix=True)
         self.input_audio = input.Audio()
-        self.server = communication.Server()
+        self.server = server.Server()
         self.server.start()
 
     def loop(self):
