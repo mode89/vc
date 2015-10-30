@@ -19,13 +19,24 @@ class Daemon:
         self.input_audio = input.Audio()
         self.server = server.Server(self)
         self.server.start()
+        self.state = Daemon.RunningState()
 
     def loop(self):
         self.working = True
         while self.working:
-            self.network.set_inputs(self.input_audio.read())
+            self.state.step(self)
         self.input_audio.close()
 
     def exit(self, options):
         print("Exiting...")
         self.working = False
+
+    class State:
+
+        def step(self, daemon):
+            raise NotImplementedError()
+
+    class RunningState(State):
+
+        def step(self, daemon):
+            daemon.network.set_inputs(daemon.input_audio.read())
