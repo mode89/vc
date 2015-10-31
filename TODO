@@ -12,6 +12,7 @@ vc
         handle background sound
     run as a service
         implement server
+            try SimpleXMLRPCServer
     control via client application
         execute command by passing command-line arguments
     implement MFCC
