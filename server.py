@@ -7,7 +7,7 @@ ADDRESS = "localhost", 1234
 class Server(ThreadingMixIn, SimpleXMLRPCServer):
 
     def __init__(self, daemon):
-        SimpleXMLRPCServer.__init__(self, ADDRESS)
+        SimpleXMLRPCServer.__init__(self, ADDRESS, allow_none=True)
         self.thread = Thread(target=self.serve_forever)
         self.thread.daemon = True
         self.register_instance(daemon)
