@@ -8,14 +8,13 @@ COMMANDS = [
     "exit"
 ]
 
-def daemonize():
+def daemonize(options):
     daemon = Daemon()
     daemon.loop()
 
-def sendCommand(command, options):
+def exit(options):
     client = Client()
-    client.sendCommand(command, options)
-    client.close()
+    client.exit(options)
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser()
@@ -26,8 +25,4 @@ if __name__ == "__main__":
         "options", metavar="<options>", nargs=argparse.REMAINDER,
         help="Command options")
     args = argparser.parse_args()
-
-    if args.command == "daemonize":
-        daemonize()
-    else:
-        sendCommand(args.command, args.options)
+    locals()[args.command](args.options)

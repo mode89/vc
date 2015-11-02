@@ -1,15 +1,9 @@
-import socket
+from xmlrpclib import ServerProxy
 
 ADDRESS = "localhost", 1234
 
-class Client:
+class Client(ServerProxy):
 
     def __init__(self):
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.connect(ADDRESS)
-
-    def sendCommand(self, command, options):
-        self.socket.send(command + " " + " ".join(options))
-
-    def close(self):
-        self.socket.close()
+        ServerProxy.__init__(
+            self, "http://{0}:{1}".format(ADDRESS[0], ADDRESS[1]))
