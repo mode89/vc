@@ -2,7 +2,7 @@ from SimpleXMLRPCServer import SimpleXMLRPCServer
 from SocketServer import ThreadingMixIn
 from threading import Thread
 
-ADDRESS = "localhost", 1234
+ADDRESS = "127.0.0.1", 1234
 
 class Server(ThreadingMixIn, SimpleXMLRPCServer):
 

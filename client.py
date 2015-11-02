@@ -1,6 +1,6 @@
 from xmlrpclib import ServerProxy
 
-ADDRESS = "localhost", 1234
+ADDRESS = "127.0.0.1", 1234
 
 class Client(ServerProxy):
 
