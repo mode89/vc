@@ -14,7 +14,7 @@ def daemonize(options):
 
 def exit(options):
     client = Client()
-    client.exit(options)
+    client.exit()
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser()

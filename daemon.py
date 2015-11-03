@@ -27,7 +27,7 @@ class Daemon:
             self.state.step(self)
         self.input_audio.close()
 
-    def exit(self, options):
+    def exit(self):
         print("Exiting...")
         self.working = False
 
