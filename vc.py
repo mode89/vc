@@ -5,7 +5,8 @@ import argparse
 
 COMMANDS = [
     "daemonize",
-    "exit"
+    "exit",
+    "train"
 ]
 
 def daemonize(options):
@@ -16,11 +17,21 @@ def exit(options):
     client = Client()
     client.exit()
 
+def train(options):
+    parser = argparse.ArgumentParser(prog="train")
+    parser.add_argument(
+        "command", metavar="<command>", choices=["start", "stop"],
+        help="Execute training command: %(choices)s")
+    args = parser.parse_args(options)
+
+    client = Client()
+    client.train(args.command)
+
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser()
     argparser.add_argument(
         "command", metavar="<command>", choices=COMMANDS,
-        help="Execute command.")
+        help="Execute command: %(choices)s")
     argparser.add_argument(
         "options", metavar="<options>", nargs=argparse.REMAINDER,
         help="Command options")
