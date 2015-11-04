@@ -31,12 +31,49 @@ class Daemon:
         print("Exiting...")
         self.working = False
 
+    def train(self, command):
+        self.state.train(self, command)
+
     class State:
 
         def step(self, daemon):
+            raise NotImplementedError()
+
+        def train(self, daemon, command):
+            if command == "start":
+                self.train_start(daemon)
+            elif command == "stop":
+                self.train_stop(daemon)
+            else:
+                raise RuntimeError(
+                    "Unknown command: {0}".format(command))
+
+        def train_start(self, daemon):
+            raise NotImplementedError()
+
+        def train_stop(self, daemon):
             raise NotImplementedError()
 
     class RunningState(State):
 
         def step(self, daemon):
             daemon.network.set_inputs(daemon.input_audio.read())
+
+        def train_start(self, daemon):
+            print("Start training...")
+            daemon.state = Daemon.TrainingState()
+
+        def train_stop(self, daemon):
+            raise Warning("Training hasn't been started.")
+
+    class TrainingState(State):
+
+        def step(self, daemon):
+            daemon.network.set_inputs(daemon.input_audio.read())
+
+        def train_start(self, daemon):
+            raise Warning("Training has already been started.")
+
+        def train_stop(self, daemon):
+            print("Stop training...")
+            daemon.state = Daemon.RunningState()
