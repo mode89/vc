@@ -34,6 +34,9 @@ class Daemon:
     def train(self, command):
         self.state.train(self, command)
 
+    def train_ambient(self, command):
+        self.state.train_ambient(self, command)
+
     class State:
 
         def step(self, daemon):
@@ -54,6 +57,21 @@ class Daemon:
         def train_stop(self, daemon):
             raise NotImplementedError()
 
+        def train_ambient(self, daemon, command):
+            if command == "start":
+                self.train_ambient_start(daemon)
+            elif command == "stop":
+                self.train_ambient_stop(daemon)
+            else:
+                raise RuntimeError(
+                    "Unknown command: {0}".format(command))
+
+        def train_ambient_start(self, daemon):
+            raise NotImplementedError()
+
+        def train_ambient_stop(self, daemon):
+            raise NotImplementedError()
+
     class RunningState(State):
 
         def step(self, daemon):
@@ -66,6 +84,13 @@ class Daemon:
         def train_stop(self, daemon):
             raise Warning("Training hasn't been started.")
 
+        def train_ambient_start(self, daemon):
+            print("Start ambient training...")
+            daemon.state = Daemon.AmbientTrainingState()
+
+        def train_ambient_stop(self, daemon):
+            raise Warning("Ambient training hasn't been started.")
+
     class TrainingState(State):
 
         def step(self, daemon):
@@ -77,3 +102,15 @@ class Daemon:
         def train_stop(self, daemon):
             print("Stop training...")
             daemon.state = Daemon.RunningState()
+
+        def train_ambient_start(self, daemon):
+            raise Warning("Cannot start ambient training while training.")
+
+        def train_ambient_stop(self, daemon):
+            raise Warning("Ambient training hasn't been started.")
+
+    class AmbientTrainingState(State):
+
+        def step(self, daemon):
+            daemon.network.set_inputs(daemon.input_audio.read())
+            daemon.network.train_online([0.0])
