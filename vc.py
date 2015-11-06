@@ -6,6 +6,7 @@ import argparse
 COMMANDS = [
     "daemonize",
     "exit",
+    "plot",
     "train",
     "train_ambient"
 ]
@@ -17,6 +18,9 @@ def daemonize(options):
 def exit(options):
     client = Client()
     client.exit()
+
+def plot(options):
+    pass
 
 def train(options):
     parser = argparse.ArgumentParser(prog="train")
