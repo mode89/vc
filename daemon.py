@@ -1,3 +1,4 @@
+from Queue import Queue
 import esn
 import input
 import server
@@ -20,11 +21,15 @@ class Daemon:
         self.server = server.Server(self)
         self.server.start()
         self.state = Daemon.RunningState()
+        self.output_queue = None
 
     def loop(self):
         self.working = True
         while self.working:
             self.state.step(self)
+            if self.output_queue is not None:
+                output = self.network.capture_output(1)
+                self.output_queue.put(output)
         self.input_audio.close()
 
     def exit(self):
@@ -36,6 +41,12 @@ class Daemon:
 
     def train_ambient(self, command):
         self.state.train_ambient(self, command)
+
+    def enable_output_capturing(self, enable):
+        if enable:
+            self.output_queue = Queue()
+        else:
+            self.output_queue = None
 
     class State:
 
