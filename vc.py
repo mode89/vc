@@ -1,6 +1,7 @@
 #!/usr/bin/python
 from client import Client
 from daemon import Daemon
+from plotting import PlotOutput
 import argparse
 
 COMMANDS = [
@@ -20,7 +21,15 @@ def exit(options):
     client.exit()
 
 def plot(options):
-    pass
+    client = Client()
+    client.enable_output_capturing(True)
+    try:
+        def output_provider():
+            return client.fetch_output()
+        plot = PlotOutput(output_provider)
+        plot.show()
+    finally:
+        client.enable_output_capturing(False)
 
 def train(options):
     parser = argparse.ArgumentParser(prog="train")
