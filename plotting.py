@@ -120,3 +120,12 @@ class Plot(Process):
             self.network_output_rms_data.popleft()
         self.line_network_output_rms.set_data(
             self.output_time_data, self.network_output_rms_data)
+
+class PlotOutput:
+
+    def __init__(self, data_provider):
+        self.data_provider = data_provider
+        self.figure = pyplot.figure()
+
+    def show(self):
+        pyplot.show()
