@@ -48,6 +48,14 @@ class Daemon:
         else:
             self.output_queue = None
 
+    def fetch_output(self):
+        outputs = []
+        size = self.output_queue.qsize()
+        for i in range(size):
+            value = self.output_queue.get()
+            outputs.append(value)
+        return outputs
+
     class State:
 
         def step(self, daemon):
