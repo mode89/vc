@@ -124,8 +124,23 @@ class Plot(Process):
 class PlotOutput:
 
     def __init__(self, data_provider):
-        self.data_provider = data_provider
         self.figure = pyplot.figure()
+        self.line, = pyplot.plot([], [])
+        pyplot.ylim(-0.1, 1.1)
+        pyplot.grid(True)
+        self.time = 0
+        self.time_marks = []
+        self.outputs = []
+        def anim_func(frame):
+            data = data_provider()
+            for value in data:
+                self.outputs.append(value)
+                self.time_marks.append(self.time)
+                self.time += SIM_STEP
+            self.line.set_data(self.time_marks, self.outputs)
+            pyplot.xlim(self.time - PLOT_TIME_WINDOW, self.time)
+        self.animation = animation.FuncAnimation(
+            self.figure, anim_func, interval = 50)
 
     def show(self):
         pyplot.show()
