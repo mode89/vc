@@ -64,6 +64,21 @@ class Daemon:
         def step(self, daemon):
             raise NotImplementedError()
 
+        def calibrate(self, daemon, command):
+            if command == "start":
+                self.calibrate_start(daemon)
+            elif command == "stop":
+                self.calibrate_stop(daemon)
+            else:
+                raise RuntimeError(
+                    "Unknown command: {0}".format(command))
+
+        def calibrate_start(self, daemon):
+            raise NotImplementedError()
+
+        def calibrate_stop(self, daemon):
+            raise NotImplementedError()
+
         def train(self, daemon, command):
             if command == "start":
                 self.train_start(daemon)
