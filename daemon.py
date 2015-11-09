@@ -1,6 +1,7 @@
 from Queue import Queue
 import esn
 import input
+import numpy
 import server
 
 INPUT_COUNT = 13
@@ -134,8 +135,14 @@ class Daemon:
 
     class CalibrationState(State):
 
+        def __init__(self):
+            self.min_inputs = numpy.finfo(float).max
+            self.max_inputs = numpy.finfo(float).min
+
         def step(self, daemon):
-            pass
+            inputs = daemon.input_audio.read()
+            self.min_inputs = numpy.minimum(inputs, self.min_inputs)
+            self.max_inputs = numpy.maximum(inputs, self.max_inputs)
 
         def calibrate_stop(self, daemon):
             print("Stop calibration...")
