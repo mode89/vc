@@ -36,6 +36,9 @@ class Daemon:
         print("Exiting...")
         self.working = False
 
+    def calibrate(self, command):
+        self.state.calibrate(self, command)
+
     def train(self, command):
         self.state.train(self, command)
 
