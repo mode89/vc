@@ -114,6 +114,10 @@ class Daemon:
         def step(self, daemon):
             daemon.network.set_inputs(daemon.input_audio.read())
 
+        def calibrate_start(self, daemon):
+            print("Start calibration...")
+            daemon.state = Daemon.CalibrationState()
+
         def train_start(self, daemon):
             print("Start training...")
             daemon.state = Daemon.TrainingState()
@@ -127,6 +131,15 @@ class Daemon:
 
         def train_ambient_stop(self, daemon):
             raise Warning("Ambient training hasn't been started.")
+
+    class CalibrationState(State):
+
+        def step(self, daemon):
+            pass
+
+        def calibrate_stop(self, daemon):
+            print("Stop calibration...")
+            daemon.state = Daemon.RunningState()
 
     class TrainingState(State):
 
