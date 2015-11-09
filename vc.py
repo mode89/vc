@@ -5,12 +5,23 @@ from plotting import PlotOutput
 import argparse
 
 COMMANDS = [
+    "calibrate",
     "daemonize",
     "exit",
     "plot",
     "train",
     "train_ambient"
 ]
+
+def calibrate(options):
+    parser = argparse.ArgumentParser(prog="calibrate")
+    parser.add_argument(
+        "command", metavar="<command>", choices=["start", "stop"],
+        help="Execute calibration command: %(choices)s")
+    args = parser.parse_args(options)
+
+    client = Client()
+    client.calibrate(args.command)
 
 def daemonize(options):
     daemon = Daemon()
