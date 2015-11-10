@@ -146,6 +146,10 @@ class Daemon:
 
         def calibrate_stop(self, daemon):
             print("Stop calibration...")
+            daemon.network.set_input_scalings(
+                numpy.reciprocal(self.max_inputs - self.min_inputs) * 0.2)
+            daemon.network.set_input_bias(
+                -(self.max_inputs + self.min_inputs) / 2.0)
             daemon.state = Daemon.RunningState()
 
     class TrainingState(State):
