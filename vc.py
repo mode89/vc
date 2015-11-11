@@ -47,10 +47,14 @@ def train(options):
     parser.add_argument(
         "command", metavar="<command>", choices=["start", "stop"],
         help="Execute training command: %(choices)s")
+    parser.add_argument(
+        "-t", "--time", metavar="<time>", type=float, default=0,
+        help="Finish training in <time> seconds. Applicable only to \
+            command 'start'.")
     args = parser.parse_args(options)
 
     client = Client()
-    client.train(args.command)
+    client.train(args.command, args.time)
 
 def train_ambient(options):
     parser = argparse.ArgumentParser(prog="train_ambient")
