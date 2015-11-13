@@ -20,7 +20,7 @@ vc
         try DFT instead of DCT
         remove dependency to 'scikits'
     debugging
-        plot network's output
+        * plot network's output
 grid search
     implement error detection
     show progress with wxPython
