@@ -7,7 +7,7 @@ vc
         calculate derivative of output signal
             try derivative of FFT
     do command on audio pattern
-    calibrate input transformation
+    * calibrate input transformation
     online training
         show dialog
         handle background sound
