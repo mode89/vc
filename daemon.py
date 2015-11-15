@@ -6,7 +6,7 @@ import server
 import time
 
 INPUT_COUNT = 13
-NEURON_COUNT = 100
+NEURON_COUNT = 500
 CONNECTIVITY = 0.5
 TIME_STEP = 0.01
 
