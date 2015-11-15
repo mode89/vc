@@ -116,6 +116,7 @@ class Daemon:
 
         def step(self, daemon):
             daemon.network.set_inputs(daemon.input_audio.read())
+            daemon.network.step(TIME_STEP)
 
         def calibrate_start(self, daemon):
             print("Start calibration...")
@@ -194,4 +195,5 @@ class Daemon:
 
         def step(self, daemon):
             daemon.network.set_inputs(daemon.input_audio.read())
+            daemon.network.step(TIME_STEP)
             daemon.network.train_online([0.0])
