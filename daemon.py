@@ -3,10 +3,12 @@ import esn
 import input
 import numpy
 import server
+import time
 
 INPUT_COUNT = 13
 NEURON_COUNT = 100
 CONNECTIVITY = 0.5
+TIME_STEP = 0.01
 
 class Daemon:
 
@@ -40,8 +42,8 @@ class Daemon:
     def calibrate(self, command):
         self.state.calibrate(self, command)
 
-    def train(self, command):
-        self.state.train(self, command)
+    def train(self, command, period):
+        self.state.train(self, command, period)
 
     def train_ambient(self, command):
         self.state.train_ambient(self, command)
@@ -80,16 +82,16 @@ class Daemon:
         def calibrate_stop(self, daemon):
             raise NotImplementedError()
 
-        def train(self, daemon, command):
+        def train(self, daemon, command, period):
             if command == "start":
-                self.train_start(daemon)
+                self.train_start(daemon, period)
             elif command == "stop":
                 self.train_stop(daemon)
             else:
                 raise RuntimeError(
                     "Unknown command: {0}".format(command))
 
-        def train_start(self, daemon):
+        def train_start(self, daemon, period):
             raise NotImplementedError()
 
         def train_stop(self, daemon):
@@ -119,9 +121,9 @@ class Daemon:
             print("Start calibration...")
             daemon.state = Daemon.CalibrationState()
 
-        def train_start(self, daemon):
+        def train_start(self, daemon, period):
             print("Start training...")
-            daemon.state = Daemon.TrainingState()
+            daemon.state = Daemon.TrainingState(period)
 
         def train_stop(self, daemon):
             raise Warning("Training hasn't been started.")
@@ -154,15 +156,33 @@ class Daemon:
 
     class TrainingState(State):
 
+        def __init__(self, period):
+            self.stop_time = 0.0
+            if period > 0.0:
+                self.stop_time = time.time() + period
+            self.end_time = 0.0
+            self.train_value = 0.0
+
         def step(self, daemon):
             daemon.network.set_inputs(daemon.input_audio.read())
+            daemon.network.step(TIME_STEP)
+            daemon.network.train_online([self.train_value])
+            current_time = time.time()
+            if self.stop_time > 0.0:
+                if current_time >= self.stop_time:
+                    self.train_stop(daemon)
+                    self.stop_time = 0.0
+            if self.end_time > 0.0:
+                if current_time >= self.end_time:
+                    print("Stop training...")
+                    daemon.state = Daemon.AmbientTrainingState()
 
         def train_start(self, daemon):
             raise Warning("Training has already been started.")
 
         def train_stop(self, daemon):
-            print("Stop training...")
-            daemon.state = Daemon.RunningState()
+            self.train_value = 0.7
+            self.end_time = time.time() + 0.2
 
         def train_ambient_start(self, daemon):
             raise Warning("Cannot start ambient training while training.")
