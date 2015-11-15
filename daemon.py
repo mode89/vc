@@ -197,3 +197,7 @@ class Daemon:
             daemon.network.set_inputs(daemon.input_audio.read())
             daemon.network.step(TIME_STEP)
             daemon.network.train_online([0.0])
+
+        def train_ambient_stop(self, daemon):
+            print("Switch to free running...")
+            daemon.state = Daemon.RunningState()
