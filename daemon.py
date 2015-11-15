@@ -198,6 +198,10 @@ class Daemon:
             daemon.network.step(TIME_STEP)
             daemon.network.train_online([0.0])
 
+        def train_start(self, daemon, period):
+            print("Start training...")
+            daemon.state = Daemon.TrainingState(period)
+
         def train_ambient_stop(self, daemon):
             print("Switch to free running...")
             daemon.state = Daemon.RunningState()
