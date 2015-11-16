@@ -23,6 +23,7 @@ class Daemon:
         self.input_audio = input.Audio()
         self.server = server.Server(self)
         self.server.start()
+        print("Free running...")
         self.state = Daemon.RunningState()
         self.output_queue = None
 
@@ -119,18 +120,18 @@ class Daemon:
             daemon.network.step(TIME_STEP)
 
         def calibrate_start(self, daemon):
-            print("Start calibration...")
+            print("Calibrating...")
             daemon.state = Daemon.CalibrationState()
 
         def train_start(self, daemon, period):
-            print("Start training...")
+            print("Training...")
             daemon.state = Daemon.TrainingState(period)
 
         def train_stop(self, daemon):
             raise Warning("Training hasn't been started.")
 
         def train_ambient_start(self, daemon):
-            print("Start ambient training...")
+            print("Ambient training...")
             daemon.state = Daemon.AmbientTrainingState()
 
         def train_ambient_stop(self, daemon):
@@ -148,11 +149,11 @@ class Daemon:
             self.max_inputs = numpy.maximum(inputs, self.max_inputs)
 
         def calibrate_stop(self, daemon):
-            print("Stop calibration...")
             daemon.network.set_input_scalings(
                 numpy.reciprocal(self.max_inputs - self.min_inputs) * 0.2)
             daemon.network.set_input_bias(
                 -(self.max_inputs + self.min_inputs) / 2.0)
+            print("Free running...")
             daemon.state = Daemon.RunningState()
 
     class TrainingState(State):
@@ -175,7 +176,7 @@ class Daemon:
                     self.stop_time = 0.0
             if self.end_time > 0.0:
                 if current_time >= self.end_time:
-                    print("Stop training...")
+                    print("Ambient training...")
                     daemon.state = Daemon.AmbientTrainingState()
 
         def train_start(self, daemon):
@@ -199,9 +200,9 @@ class Daemon:
             daemon.network.train_online([0.0])
 
         def train_start(self, daemon, period):
-            print("Start training...")
+            print("Training...")
             daemon.state = Daemon.TrainingState(period)
 
         def train_ambient_stop(self, daemon):
-            print("Switch to free running...")
+            print("Free running...")
             daemon.state = Daemon.RunningState()
