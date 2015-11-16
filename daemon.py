@@ -9,6 +9,8 @@ INPUT_COUNT = 13
 NEURON_COUNT = 500
 CONNECTIVITY = 0.5
 TIME_STEP = 0.01
+PULSE_MAGNITUDE = 0.7
+PULSE_WIDTH = 0.15
 
 class Daemon:
 
@@ -183,8 +185,8 @@ class Daemon:
             raise Warning("Training has already been started.")
 
         def train_stop(self, daemon):
-            self.train_value = 0.7
-            self.end_time = time.time() + 0.2
+            self.train_value = PULSE_MAGNITUDE
+            self.end_time = time.time() + PULSE_WIDTH
 
         def train_ambient_start(self, daemon):
             raise Warning("Cannot start ambient training while training.")
