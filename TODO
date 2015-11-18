@@ -21,6 +21,7 @@ vc
         remove dependency to 'scikits'
     debugging
         * plot network's output
+        capture input to a file
 grid search
     implement error detection
     show progress with wxPython
