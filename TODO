@@ -24,4 +24,4 @@ vc
         capture input to a file
 grid search
     implement error detection
-    show progress with wxPython
+    - show progress with wxPython
