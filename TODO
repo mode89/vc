@@ -1,5 +1,5 @@
 vc
-    capture audio
+    * capture audio
     process audio and feed it to the neural network
     detect output pulse
         level triggered detection
