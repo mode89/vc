@@ -1,6 +1,7 @@
 from Queue import Queue
 import esn
 import input
+import mfcc
 import numpy
 import server
 import time
@@ -32,7 +33,9 @@ class Daemon:
     def loop(self):
         self.working = True
         while self.working:
-            self.state.step(self)
+            frames = self.input_audio.read()
+            mfcc_features = mfcc.mfcc(frames)
+            self.state.step(self, mfcc_features)
             if self.output_queue is not None:
                 output = self.network.capture_output(1)
                 self.output_queue.put(output)
@@ -67,7 +70,7 @@ class Daemon:
 
     class State:
 
-        def step(self, daemon):
+        def step(self, daemon, mfcc_features):
             raise NotImplementedError()
 
         def calibrate(self, daemon, command):
@@ -117,8 +120,8 @@ class Daemon:
 
     class RunningState(State):
 
-        def step(self, daemon):
-            daemon.network.set_inputs(daemon.input_audio.read())
+        def step(self, daemon, mfcc_features):
+            daemon.network.set_inputs(mfcc_features)
             daemon.network.step(TIME_STEP)
 
         def calibrate_start(self, daemon):
@@ -145,10 +148,9 @@ class Daemon:
             self.min_inputs = numpy.finfo(float).max
             self.max_inputs = numpy.finfo(float).min
 
-        def step(self, daemon):
-            inputs = daemon.input_audio.read()
-            self.min_inputs = numpy.minimum(inputs, self.min_inputs)
-            self.max_inputs = numpy.maximum(inputs, self.max_inputs)
+        def step(self, daemon, mfcc_features):
+            self.min_inputs = numpy.minimum(mfcc_features, self.min_inputs)
+            self.max_inputs = numpy.maximum(mfcc_features, self.max_inputs)
 
         def calibrate_stop(self, daemon):
             daemon.network.set_input_scalings(
@@ -167,8 +169,8 @@ class Daemon:
             self.end_time = 0.0
             self.train_value = 0.0
 
-        def step(self, daemon):
-            daemon.network.set_inputs(daemon.input_audio.read())
+        def step(self, daemon, mfcc_features):
+            daemon.network.set_inputs(mfcc_features)
             daemon.network.step(TIME_STEP)
             daemon.network.train_online([self.train_value])
             current_time = time.time()
@@ -196,8 +198,8 @@ class Daemon:
 
     class AmbientTrainingState(State):
 
-        def step(self, daemon):
-            daemon.network.set_inputs(daemon.input_audio.read())
+        def step(self, daemon, mfcc_features):
+            daemon.network.set_inputs(mfcc_features)
             daemon.network.step(TIME_STEP)
             daemon.network.train_online([0.0])
 
