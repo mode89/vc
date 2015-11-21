@@ -6,6 +6,7 @@ import argparse
 
 COMMANDS = [
     "calibrate",
+    "capture_input",
     "daemonize",
     "exit",
     "plot",
@@ -22,6 +23,16 @@ def calibrate(options):
 
     client = Client()
     client.calibrate(args.command)
+
+def capture_input(options):
+    parser = argparse.ArgumentParser(prog="capture_inputs")
+    parser.add_argument(
+        "command", metavar="<command>", choices=["start", "stop"],
+        help="Control input audio capturing by commands: %(choices)s")
+    args = parser.parse_args(options)
+
+    client = Client()
+    client.capture_input(args.command)
 
 def daemonize(options):
     daemon = Daemon()
