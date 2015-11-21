@@ -1,4 +1,3 @@
-from scikits.talkbox.features import mfcc
 import numpy
 import pyaudio
 
@@ -7,7 +6,6 @@ FRAME_RATE = 44100
 SAMPLE_RATE = 100
 FRAMES_PER_BUFFER = FRAME_RATE / SAMPLE_RATE
 SAMPLE_STEP = 1.0 / SAMPLE_RATE
-MFCC_NUM = 13
 
 class Audio:
 
@@ -25,7 +23,7 @@ class Audio:
         try:
             frames = numpy.fromstring(self.stream.read(FRAMES_PER_BUFFER),
                 dtype=numpy.int16) / float(2 ** 15)
-            return mfcc(frames, fs=FRAME_RATE, nceps=MFCC_NUM)[0][0]
+            return frames
         except IOError as e:
             print(e)
             return numpy.zeros(MFCC_NUM)
