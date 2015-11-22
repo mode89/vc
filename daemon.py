@@ -29,11 +29,14 @@ class Daemon:
         print("Free running...")
         self.state = Daemon.RunningState()
         self.output_queue = None
+        self.input_frames = None
 
     def loop(self):
         self.working = True
         while self.working:
             frames = self.input_audio.read()
+            if self.input_frames is not None:
+                self.input_frames.append(frames)
             mfcc_features = mfcc.mfcc(frames)
             self.state.step(self, mfcc_features)
             if self.output_queue is not None:
@@ -47,6 +50,17 @@ class Daemon:
 
     def calibrate(self, command):
         self.state.calibrate(self, command)
+
+    def capture_input(self, command):
+        if command == "start":
+            print("Start input capturing...")
+            self.input_frames = []
+        elif command == "stop":
+            print("Stop input capturing...")
+            self.input_frames = None
+        else:
+            raise RuntimeError(
+                "Undefined command: {0}".format(command))
 
     def train(self, command, period):
         self.state.train(self, command, period)
