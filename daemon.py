@@ -5,6 +5,7 @@ import mfcc
 import numpy
 import server
 import time
+import wave
 
 INPUT_COUNT = 13
 NEURON_COUNT = 500
@@ -57,6 +58,11 @@ class Daemon:
             self.input_frames = []
         elif command == "stop":
             print("Stop input capturing...")
+            wave_file = wave.open("input.wav", "wb")
+            wave_file.setnchannels(1)
+            wave_file.setsampwidth(2)
+            wave_file.setframerate(44100)
+            wave_file.close()
             self.input_frames = None
         else:
             raise RuntimeError(
