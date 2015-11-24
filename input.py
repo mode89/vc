@@ -26,7 +26,7 @@ class Audio:
             return frames
         except IOError as e:
             print(e)
-            return numpy.zeros(MFCC_NUM)
+            return numpy.zeros(FRAMES_PER_BUFFER)
 
     def close(self):
         self.stream.stop_stream()
