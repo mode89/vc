@@ -37,7 +37,7 @@ class Daemon:
         while self.working:
             frames = self.input_audio.read()
             if self.input_frames is not None:
-                self.input_frames.append(frames)
+                self.input_frames = numpy.append(self.input_frames, frames)
             mfcc_features = mfcc.mfcc(frames)
             self.state.step(self, mfcc_features)
             if self.output_queue is not None:
@@ -55,7 +55,7 @@ class Daemon:
     def capture_input(self, command):
         if command == "start":
             print("Start input capturing...")
-            self.input_frames = []
+            self.input_frames = numpy.array([])
         elif command == "stop":
             print("Stop input capturing...")
             wave_file = wave.open("input.wav", "wb")
