@@ -4,6 +4,7 @@ import input
 import mfcc
 import numpy
 import server
+import struct
 import time
 import wave
 
@@ -62,6 +63,10 @@ class Daemon:
             wave_file.setnchannels(1)
             wave_file.setsampwidth(2)
             wave_file.setframerate(44100)
+            input_frames = self.input_frames * (2 ** 15)
+            wave_file.writeframes(
+                struct.pack(
+                    "{0}h".format(len(input_frames)), *input_frames))
             wave_file.close()
             self.input_frames = None
         else:
