@@ -11,6 +11,8 @@ vc
     online training
         show dialog
         handle background sound
+        self training
+            run training when it feels necessary
     run as a service
         implement server
             * try SimpleXMLRPCServer
