@@ -145,6 +145,10 @@ class PlotOutput:
     def show(self):
         pyplot.show()
 
+class DataMFCC:
+    time = None
+    coeffs = None
+
 class PlotMFCC(Process):
 
     def __init__(self, num_coeff):
@@ -153,12 +157,16 @@ class PlotMFCC(Process):
         self.num_coeff = num_coeff
         Process.start(self)
 
-    def append(self, data):
+    def append(self, coeffs, time):
         if self.is_alive():
+            data = DataMFCC()
+            data.time = time
+            data.coeffs = coeffs
             self.queue.put_nowait(data)
 
     def run(self):
         self.data = numpy.zeros([self.num_coeff, 100])
+        self.time = deque(maxlen=100)
         self.figure = pyplot.figure()
         self.image = pyplot.imshow(self.data, interpolation="gaussian",
             aspect="auto")
@@ -172,6 +180,10 @@ class PlotMFCC(Process):
 
     def animation(self):
         while not self.queue.empty():
+            data = self.queue.get_nowait()
             self.data = numpy.roll(self.data, -1)
-            self.data[:,-1] = self.queue.get_nowait()
+            self.data[:,-1] = data.coeffs
+            self.time.append(data.time)
         self.image.set_array(self.data)
+        self.image.set_extent(
+            (self.time[0], self.time[-1], self.num_coeff, 0))
