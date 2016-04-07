@@ -144,3 +144,34 @@ class PlotOutput:
 
     def show(self):
         pyplot.show()
+
+class PlotMFCC(Process):
+
+    def __init__(self, num_coeff):
+        Process.__init__(self)
+        self.queue = Queue()
+        self.num_coeff = num_coeff
+        Process.start(self)
+
+    def append(self, data):
+        if self.is_alive():
+            self.queue.put_nowait(data)
+
+    def run(self):
+        self.data = numpy.zeros([self.num_coeff, 100])
+        self.figure = pyplot.figure()
+        self.image = pyplot.imshow(self.data, interpolation="gaussian",
+            aspect="auto")
+        self.image.set_extent((0, 100, self.num_coeff, 0))
+        self.image.set_clim(0.0, 1.0)
+
+        anim = animation.FuncAnimation(self.figure,
+            lambda frame_id: self.animation(), interval=100)
+
+        pyplot.show()
+
+    def animation(self):
+        while not self.queue.empty():
+            self.data = numpy.roll(self.data, -1)
+            self.data[:,-1] = self.queue.get_nowait()
+        self.image.set_array(self.data)
