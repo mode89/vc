@@ -1,7 +1,7 @@
+from plotting import MfccGraph, Plot
 import esn
 import input
 import mfcc
-import plotting
 
 NEURON_COUNT = 256
 CONNECTIVITY = 0.5
@@ -25,13 +25,16 @@ if __name__ == "__main__":
     audio = input.Audio()
 
     print("Normalizing inputs...")
-    mfcc_plot = plotting.PlotMFCC(num_coeff=MFCC_COEFF)
+    plot = Plot()
+    plot.mfcc = MfccGraph(MFCC_COEFF)
+    plot.add(plot.mfcc)
+    plot.start()
     min_values = [float("inf")] * MFCC_COEFF
     max_values = [float("-inf")] * MFCC_COEFF
     time = 0
-    while mfcc_plot.is_alive():
+    while plot.is_alive():
         coeffs = read_coeffs()
-        mfcc_plot.append(coeffs, time)
+        plot.mfcc.append(coeffs, time)
         time += 1
         for i in range(MFCC_COEFF):
             min_values[i] = min(coeffs[i], min_values[i])
