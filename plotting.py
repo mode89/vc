@@ -1,5 +1,7 @@
 from collections import deque
 from detecting import RMS
+import matplotlib
+matplotlib.use("TkAgg")
 from matplotlib import pyplot
 from matplotlib import animation
 from multiprocessing import Process, Queue
