@@ -17,8 +17,9 @@ class Plot(Process):
 
     def run(self):
         self.figure = pyplot.figure()
-        for graph in self.graphs:
-            graph.show(self.figure)
+        for i in range(len(self.graphs)):
+            subplot = pyplot.subplot(len(self.graphs), 1, i + 1)
+            self.graphs[i].show(self.figure, subplot)
         pyplot.show()
 
 class MfccData:
@@ -37,11 +38,12 @@ class MfccGraph:
         data.coeffs = coeffs
         self.queue.put_nowait(data)
 
-    def show(self, figure):
+    def show(self, figure, subplot):
+        self.subplot = subplot
         self.data = numpy.zeros([self.num_coeff, 100])
         self.time = deque(maxlen=100)
-        self.image = pyplot.imshow(self.data, interpolation="gaussian",
-            aspect="auto")
+        self.image = self.subplot.imshow(self.data,
+            interpolation="gaussian", aspect="auto")
         self.image.set_extent((0, 100, self.num_coeff, 0))
         self.image.set_clim(0.0, 1.0)
 
