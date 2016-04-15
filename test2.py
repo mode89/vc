@@ -1,4 +1,4 @@
-from plotting import MfccGraph, Plot
+from plotting import MfccGraph, OutputGraph, Plot
 import esn
 import input
 import mfcc
@@ -47,5 +47,23 @@ if __name__ == "__main__":
 
     network.set_input_scalings(input_scaling)
     network.set_input_bias(input_bias)
+
+    print("Washing out...")
+    plot = Plot()
+    plot.mfcc = MfccGraph(MFCC_COEFF)
+    plot.add(plot.mfcc)
+    plot.out = OutputGraph()
+    plot.add(plot.out)
+    plot.start()
+    while plot.is_alive():
+        coeffs = read_coeffs()
+        network.set_inputs(coeffs)
+        network.step(1.0)
+        norm_coeffs = network.capture_transformed_inputs(MFCC_COEFF)
+        output = network.capture_output(1)
+        print(output[0])
+        plot.mfcc.append(norm_coeffs, time)
+        plot.out.append(output[0], time)
+        time += 1
 
     audio.close()
