@@ -40,9 +40,9 @@ if __name__ == "__main__":
             min_values[i] = min(coeffs[i], min_values[i])
             max_values[i] = max(coeffs[i], max_values[i])
 
-    input_scaling = [1.0 / (max_values[i] - min_values[i])
+    input_scaling = [2.0 / (max_values[i] - min_values[i])
         for i in range(MFCC_COEFF)]
-    input_bias = [-0.5 * (max_values[i] - min_values[i])
+    input_bias = [-0.5 * (max_values[i] + min_values[i])
         for i in range(MFCC_COEFF)]
 
     network.set_input_scalings(input_scaling)

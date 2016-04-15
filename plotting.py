@@ -47,7 +47,7 @@ class MfccGraph:
         self.image = self.subplot.imshow(self.data,
             interpolation="gaussian", aspect="auto")
         self.image.set_extent((0, 100, self.num_coeff, 0))
-        self.image.set_clim(0.0, 1.0)
+        self.image.set_clim(-1.0, 1.0)
 
         self.anim = animation.FuncAnimation(figure,
             lambda frame_id: self.animation(), interval=100)
