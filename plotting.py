@@ -59,3 +59,34 @@ class MfccGraph:
         self.image.set_array(self.data)
         self.image.set_extent(
             (self.time[0], self.time[-1], self.num_coeff, 0))
+
+class OutputData:
+    time = None
+    value = None
+
+class OutputGraph:
+
+    def __init__(self):
+        self.queue = Queue()
+
+    def append(self, value, time):
+        data = OutputData()
+        data.time = time
+        data.value = value
+        self.queue.put_nowait(data)
+
+    def show(self, figure, subplot):
+        self.subplot = subplot
+        self.time = deque(maxlen=100)
+        self.values = deque(maxlen=100)
+        self.line, = self.subplot.plot([], [])
+        self.anim = animation.FuncAnimation(figure,
+            lambda frame_id: self.animation(), interval=100)
+
+    def animation(self):
+        while not self.queue.empty():
+            data = self.queue.get_nowait()
+            self.values.append(data.value)
+            self.time.append(data.time)
+        self.line.set_data(self.time, self.values)
+        self.subplot.set_xlim(self.time[0], self.time[-1])
