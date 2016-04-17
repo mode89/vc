@@ -1,5 +1,5 @@
-import numpy
 import pyaudio
+import struct
 
 INPUT_FORMAT = pyaudio.paInt16
 FRAME_RATE = 44100
@@ -21,12 +21,13 @@ class Audio:
 
     def read(self):
         try:
-            frames = numpy.fromstring(self.stream.read(FRAMES_PER_BUFFER),
-                dtype=numpy.int16) / float(2 ** 15)
-            return frames
+            frames = struct.unpack(
+                "%ih" % FRAMES_PER_BUFFER,
+                self.stream.read(FRAMES_PER_BUFFER))
+            return [float(val) / 2 ** 15 for val in frames]
         except IOError as e:
             print(e)
-            return numpy.zeros(FRAMES_PER_BUFFER)
+            return [0.0] * FRAMES_PER_BUFFER
 
     def close(self):
         self.stream.stop_stream()
