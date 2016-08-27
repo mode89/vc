@@ -66,3 +66,27 @@ class PerlinNoise :
     def _cosine_interpolate( a, b, x ) :
         f = ( 1 - cos( x * pi ) ) * 0.5
         return a * ( 1 - f ) + b * f
+
+class TriggerWithDelayedOff:
+
+    def __init__(self, on, delay):
+        self.on = on
+        self.delay = delay
+        self.prev_value = 0
+        self.count = 0
+        self.switched_on = False
+        self.switched_off = False
+
+    def update(self, value):
+        self.switched_on = False
+        self.switched_off = False
+        if self.count > 0:
+            self.count -= 1
+            if self.count == 0:
+                self.switched_off = True
+        else:
+            if self.prev_value < self.on and value >= self.on:
+                self.count = self.delay
+                self.switched_on = True
+        self.prev_value = value
+        return self.count > 0

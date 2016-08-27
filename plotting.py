@@ -1,94 +1,62 @@
-from collections import deque
-from detecting import RMS
-import matplotlib
-matplotlib.use("TkAgg")
-from matplotlib import pyplot
-from matplotlib import animation
-from multiprocessing import Process, Queue
+import input
 import numpy
-from Queue import Full
+import pyqtgraph
+from pyqtgraph.Qt import QtCore, QtGui
 
-class Plot(Process):
+SAMPLE_RATE = 44100
 
-    def __init__(self):
-        Process.__init__(self)
-        self.graphs = list()
+pyqtgraph.setConfigOptions(antialias=True)
 
-    def add(self, graph):
-        self.graphs.append(graph)
+class Queue:
 
-    def run(self):
-        self.figure = pyplot.figure()
-        for i in range(len(self.graphs)):
-            subplot = pyplot.subplot(len(self.graphs), 1, i + 1)
-            self.graphs[i].show(self.figure, subplot)
-        pyplot.show()
+    def __init__(self, size):
+        self.data = numpy.zeros(size)
+        self.index = 0
 
-class MfccData:
-    time = None
-    coeffs = None
+    def extend(self, array):
+        index = (self.index + numpy.arange(array.size)) % self.data.size
+        self.data[index] = array
+        self.index = index[-1] + 1
 
-class MfccGraph:
+    def get(self):
+        index = (self.index + numpy.arange(self.data.size)) % self.data.size
+        return self.data[index]
 
-    def __init__(self, num_coeff):
-        self.queue = Queue()
-        self.num_coeff = num_coeff
-
-    def append(self, coeffs, time):
-        data = MfccData()
-        data.time = time
-        data.coeffs = coeffs
-        self.queue.put_nowait(data)
-
-    def show(self, figure, subplot):
-        self.subplot = subplot
-        self.data = numpy.zeros([self.num_coeff, 100])
-        self.time = deque(maxlen=100)
-        self.image = self.subplot.imshow(self.data,
-            interpolation="gaussian", aspect="auto")
-        self.image.set_extent((0, 100, self.num_coeff, 0))
-        self.image.set_clim(-1.0, 1.0)
-
-        self.anim = animation.FuncAnimation(figure,
-            lambda frame_id: self.animation(), interval=100)
-
-    def animation(self):
-        while not self.queue.empty():
-            data = self.queue.get_nowait()
-            self.data = numpy.roll(self.data, -1)
-            self.data[:,-1] = data.coeffs
-            self.time.append(data.time)
-        self.image.set_array(self.data)
-        self.image.set_extent(
-            (self.time[0], self.time[-1], self.num_coeff, 0))
-
-class OutputData:
-    time = None
-    value = None
-
-class OutputGraph:
+class Window:
 
     def __init__(self):
-        self.queue = Queue()
+        self.application = QtGui.QApplication([])
+        self.window = pyqtgraph.GraphicsWindow()
 
-    def append(self, value, time):
-        data = OutputData()
-        data.time = time
-        data.value = value
-        self.queue.put_nowait(data)
+    def addPlot(self, plot):
+        self.window.addItem(plot)
 
-    def show(self, figure, subplot):
-        self.subplot = subplot
-        self.time = deque(maxlen=100)
-        self.values = deque(maxlen=100)
-        self.line, = self.subplot.plot([], [])
-        self.anim = animation.FuncAnimation(figure,
-            lambda frame_id: self.animation(), interval=100)
+    def isVisible(self):
+        return self.window.isVisible()
 
-    def animation(self):
-        while not self.queue.empty():
-            data = self.queue.get_nowait()
-            self.values.append(data.value)
-            self.time.append(data.time)
-        self.line.set_data(self.time, self.values)
-        self.subplot.set_xlim(self.time[0], self.time[-1])
+    def update(self):
+        self.application.processEvents()
+
+class AudioPlot(pyqtgraph.PlotItem):
+
+    BUFFER_LENGTH = 0.1
+
+    def __init__(self):
+        pyqtgraph.PlotItem.__init__(self)
+        self.queue = Queue(SAMPLE_RATE * AudioPlot.BUFFER_LENGTH)
+        self.samplesCounter = 0
+        self.curve = self.plot()
+
+    def appendSamples(self, samples):
+        self.queue.extend(samples)
+        self.curve.setData(self.queue.get())
+
+if __name__ == "__main__":
+    inputAudio = input.Audio()
+    window = Window()
+    audioPlot = AudioPlot()
+    window.addPlot(audioPlot)
+    while window.isVisible():
+        samples = inputAudio.read_array()
+        audioPlot.appendSamples(samples)
+        window.update()

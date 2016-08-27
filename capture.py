@@ -2,6 +2,7 @@ import input
 import pickle
 import random
 import time
+import zipfile
 
 PROMPT_PAUSE_MIN = 2
 PROMPT_PAUSE_MAX = 5
@@ -27,7 +28,7 @@ if __name__ == "__main__":
     print("Capturing...")
     random_word = random.Random()
     random_pause = random.Random()
-    output_file = open("captured.pkl", "wb")
+    output_file = zipfile.ZipFile("captured.pkl.zip", mode="a")
     orig_time = time.time()
     prompt_time = random_pause.uniform(PROMPT_PAUSE_MIN, PROMPT_PAUSE_MAX)
     word_count = dict()
@@ -59,4 +60,4 @@ if __name__ == "__main__":
             prompt_time = prompt_time + random_pause.uniform(
                 PROMPT_PAUSE_MIN, PROMPT_PAUSE_MAX)
 
-        pickle.dump(data, output_file)
+        output_file.writestr("captured.pkl", pickle.dumps(data))

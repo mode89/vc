@@ -1,3 +1,4 @@
+import numpy
 import pyaudio
 import struct
 
@@ -28,6 +29,15 @@ class Audio:
         except IOError as e:
             print(e)
             return [0.0] * FRAMES_PER_BUFFER
+
+    def read_array(self):
+        try:
+            frames = numpy.fromstring(
+                self.stream.read(FRAMES_PER_BUFFER), numpy.int16)
+            return frames;
+        except IOError as e:
+            print(e)
+            return numpy.zeros(FRAMES_PER_BUFFER)
 
     def close(self):
         self.stream.stop_stream()
