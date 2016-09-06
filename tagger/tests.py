@@ -14,14 +14,26 @@ class TaggerTests(unittest.TestCase):
         app = flask.Flask(__name__)
         @app.route("/")
         def hello():
-            return flask.render_template("hello.html")
+            return flask.render_template_string("""
+                <!doctype html>
+                <title>Tagger</title>
+                <body>Hello, World!</body>
+            """)
         app.run(host="0.0.0.0")
 
     def test_button(self):
         app = flask.Flask(__name__)
         @app.route("/")
         def hello():
-            return flask.render_template("button.html")
+            return flask.render_template_string("""
+                <!doctype html>
+                <title>Tagger</title>
+                <body>
+                    <form action="/button" method="post">
+                        <input type="submit" name="button" value="Button"/>
+                    </form>
+                </body>
+            """)
         @app.route("/button", methods=["POST"])
         def button():
             print("Pressed button")
