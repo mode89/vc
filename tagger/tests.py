@@ -40,5 +40,27 @@ class TaggerTests(unittest.TestCase):
             return flask.redirect("/")
         app.run(host="0.0.0.0")
 
+    def test_buttons(self):
+        app = flask.Flask(__name__)
+        @app.route("/", methods=["GET", "POST"])
+        def form():
+            if "button1" in flask.request.form:
+                print("Pressed the first button")
+            elif "button2" in flask.request.form:
+                print("Pressed the second button")
+            return flask.render_template_string("""
+                <!doctype html>
+                <title>Tagger</title>
+                <body>
+                    <form action="/" method="post">
+                        <input type="submit"
+                            name="button1" value="Button1"/>
+                        <input type="submit"
+                            name="button2" value="Button2"/>
+                    </form>
+                </body>
+            """)
+        app.run(host="0.0.0.0")
+
 if __name__ == "__main__":
     unittest.main()
