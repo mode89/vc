@@ -1,7 +1,7 @@
 import flask
 import unittest
 
-class TestTagger(unittest.TestCase):
+class TaggerTests(unittest.TestCase):
 
     def test_flask_hello_world(self):
         app = flask.Flask(__name__)
