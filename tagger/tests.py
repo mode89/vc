@@ -30,7 +30,9 @@ class TaggerTests(unittest.TestCase):
                 <title>Tagger</title>
                 <body>
                     <form action="/button" method="post">
-                        <input type="submit" name="button" value="Button"/>
+                        <input type="submit"
+                            name="button"
+                            value="Button"/>
                     </form>
                 </body>
             """)
@@ -51,12 +53,42 @@ class TaggerTests(unittest.TestCase):
             return flask.render_template_string("""
                 <!doctype html>
                 <title>Tagger</title>
+                <style>
+                    .buttons {
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                    }
+
+                    .button input {
+                        width: 500px;
+                        height: 100px;
+                        border-radius: 25px;
+                        font-size: 50px;
+                        margin: 10px;
+                    }
+                </style>
                 <body>
                     <form action="/" method="post">
-                        <input type="submit"
-                            name="button1" value="Button1"/>
-                        <input type="submit"
-                            name="button2" value="Button2"/>
+                        <div class="buttons">
+                            <table>
+                                <tr>
+                                    <div class="button">
+                                        <input type="submit"
+                                            name="button1"
+                                            value="Button1"/>
+                                    </div>
+                                </tr>
+                                <tr>
+                                    <div class="button">
+                                        <input type="submit"
+                                            name="button2"
+                                            value="Button2"/>
+                                    </div>
+                                </tr>
+                            </table>
+                        </div>
                     </form>
                 </body>
             """)
