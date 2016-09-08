@@ -1,4 +1,5 @@
 import flask
+import server
 import unittest
 
 class TaggerTests(unittest.TestCase):
@@ -93,6 +94,10 @@ class TaggerTests(unittest.TestCase):
                 </body>
             """)
         app.run(host="0.0.0.0")
+
+    def test_server(self):
+        srv = server.Server(__name__)
+        srv.run()
 
 if __name__ == "__main__":
     unittest.main()
